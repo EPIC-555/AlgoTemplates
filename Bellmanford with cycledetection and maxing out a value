@@ -1,0 +1,73 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+const int N = 3e5 + 9;
+
+struct st {
+    int a, b, cost;
+} e[N];
+
+const int INF = 4e18;
+
+int32_t main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<int> rev[n + 1];
+
+    for (int i = 1; i <= m; i++) {
+        cin >> e[i].a >> e[i].b >> e[i].cost;
+        rev[e[i].b].push_back(e[i].a);
+    }
+
+    vector<int> canReach(n + 1, 0);
+    queue<int> qu;
+    qu.push(n);
+    canReach[n] = 1;
+
+    while (!qu.empty()) {
+        int u = qu.front();
+        qu.pop();
+
+        for (auto v : rev[u]) {
+            if (!canReach[v]) {
+                canReach[v] = 1;
+                qu.push(v);
+            }
+        }
+    }
+
+    int s = 1;
+    vector<int> d(n + 1, -INF);
+    d[s] = 0;
+
+    int x = -1;
+
+    for (int i = 1; i <= n; i++) {
+        x = -1;
+
+        for (int j = 1; j <= m; j++) {
+            if (d[e[j].a] != -INF &&
+    d[e[j].b] < d[e[j].a] + e[j].cost) {
+    d[e[j].b] = d[e[j].a] + e[j].cost;
+
+    if (i == n && canReach[e[j].b]) {
+        x = e[j].b;
+    }
+}
+        }
+    }
+
+    if (x != -1 && canReach[x]) {
+        cout << -1 << '\n';
+    } else {
+        cout << d[n] << '\n';
+    }
+
+    return 0;
+}
